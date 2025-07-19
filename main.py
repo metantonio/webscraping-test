@@ -49,6 +49,9 @@ async def press_button(driver, by_type, value):
     except Exception as e:
         print("Fail pressing button: ", e)
 
+def limpiar_dato(dato):
+    """Limpia espacios extras y caracteres problemáticos"""
+    return dato.strip().replace('\n', ' ').replace('\r', '')
 
 if __name__ == "__main__":
     url = "https://clinicalavina.com/especialidadesmedicas"
@@ -131,7 +134,12 @@ if __name__ == "__main__":
     campos = ["Nombre de Médico", "Especialidad", "Ubicación de consultorio", "Teléfonos"]
 
     try:
-        with open(nombre_archivo, mode='w', newline='', encoding='utf-8') as archivo_csv:
+        for medico in lista_medicos:
+            for key in medico:
+                medico[key] = limpiar_dato(medico[key])
+                
+        with open(nombre_archivo, mode='w', newline='', encoding='utf-8-sig') as archivo_csv:
+            campos = lista_medicos[0].keys() if lista_medicos else []
             escritor = csv.DictWriter(archivo_csv, fieldnames=campos)
             
             # Escribir encabezados
